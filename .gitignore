@@ -1,0 +1,17 @@
+/.idea/
+/tmp/
+/bin/
+*.test
+*.swp
+.gitignore
+.idea/.gitignore
+.idea/artifacts/
+.idea/compiler.xml
+.idea/description.html
+.idea/encodings.xml
+.idea/gradle.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+Invader.iml
