@@ -1,28 +1,35 @@
 package com.kotmw.invader.entity;
 
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
-public abstract class Entity {
+public abstract class Entity extends Rectangle {
 
-    private int id;
-    private boolean dead;
-    private Point2D point2D;
-    private BoundingBox boundingBox;
+    private boolean dead = false;
+    private EntityType entityType;
 
-    public int getId() {
-        return id;
+    public Entity(double x, double y, double w, double h, EntityType entityType, Color color) {
+        super(w, h, color);
+
+        this.entityType = entityType;
+        setTranslateX(x);
+        setTranslateY(y);
     }
 
-    public boolean isDead() {
-        return dead;
+    public void moveLeft() {}
+
+    public void moveRight() {}
+
+    public void moveUp() {}
+
+    public void moveDown() {}
+
+    public boolean dead() {
+        if(dead) return false;
+        return dead = true;
     }
 
-    public Point2D getPoint2D() {
-        return point2D;
-    }
+    public boolean isDead() { return dead; }
 
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
-    }
+    public EntityType getEntityType() { return entityType; }
 }
