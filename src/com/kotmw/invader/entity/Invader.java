@@ -1,6 +1,7 @@
 package com.kotmw.invader.entity;
 
 import com.kotmw.invader.entity.missile.InvaderMissile;
+import com.kotmw.invader.entity.missile.Missile;
 import com.kotmw.invader.entity.missile.Shooter;
 import javafx.scene.paint.Color;
 
@@ -26,7 +27,7 @@ public class Invader extends Entity implements Shooter {
     }
 
     @Override
-    public void shoot() {
-        InvaderMissile missile = new InvaderMissile(getTranslateX(), getTranslateY(), 5, 20, Color.BLACK);
+    public Missile shoot() {
+        return new InvaderMissile(getTranslateX(), getTranslateY() + 20, 5, 20, Color.WHITE);
     }
 }
