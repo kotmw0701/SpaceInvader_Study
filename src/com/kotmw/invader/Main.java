@@ -12,7 +12,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception{
-        Scene scene = new Scene(FXMLLoader.load(getClass().getResource("Main.fxml")), 1120, 630);
+        Scene scene = new Scene(FXMLLoader.load(getClass().getResource("Main.fxml")));
         scene.getRoot().requestFocus();
         stage.setTitle("Invader");
         stage.setResizable(false);

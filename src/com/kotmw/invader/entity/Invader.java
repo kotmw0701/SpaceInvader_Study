@@ -5,7 +5,7 @@ import com.kotmw.invader.entity.missile.Missile;
 import com.kotmw.invader.entity.missile.Shooter;
 import javafx.scene.paint.Color;
 
-public class Invader extends Entity implements Shooter {
+public class Invader extends Enemy implements Shooter {
 
     public Invader(double x, double y, double w, double h, Color color) {
         super(x, y, w, h, EntityType.Invader, color);
@@ -31,3 +31,9 @@ public class Invader extends Entity implements Shooter {
         return new InvaderMissile(getTranslateX(), getTranslateY() + 20, 5, 20, Color.WHITE);
     }
 }
+/*
+メモ :
+    8 : 12  x2
+    8 : 11  x2
+    8 : 8   x1
+ */
