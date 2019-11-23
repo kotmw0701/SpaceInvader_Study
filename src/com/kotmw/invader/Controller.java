@@ -2,6 +2,7 @@ package com.kotmw.invader;
 
 import com.kotmw.invader.entity.Cannon;
 import com.kotmw.invader.entity.Entity;
+import com.kotmw.invader.entity.missile.CannonMissile;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,10 +47,11 @@ public class Controller implements Initializable {
                 .map(e -> (Entity)e).collect(Collectors.toList());
     }
 
+
     private void update() {
 
-        if (right) player.moveRight();
-        if (left) player.moveLeft();
+        if (right && player.getTranslateX()+player.getWidth() < container.getPrefWidth()) player.moveRight();
+        if (left && player.getTranslateX() > 0) player.moveLeft();
 
         entities().forEach(e -> {
             switch (e.getEntityType()) {
@@ -61,11 +63,11 @@ public class Controller implements Initializable {
                     break;
                 case CannonMissile:
                     e.moveUp();
-                    if (isObjectInWindow(e)) e.dead();
+                    if (!isObjectInWindow(e)) e.dead();
                     break;
                 case InvaderMissile:
                     e.moveDown();
-                    if (isObjectInWindow(e)) e.dead();
+                    if (!isObjectInWindow(e)) e.dead();
                     break;
             }
         });
@@ -73,13 +75,19 @@ public class Controller implements Initializable {
         container.getChildren().removeIf(e -> (e instanceof Entity) && ((Entity) e).isDead());
     }
 
+    /**
+     * Entityがcontainerの範囲に居るかをチェック
+     *
+     * @param entity 確認したい対象のEntity
+     * @return 含まれるならtrue、含まれないならfalse
+     */
     private boolean isObjectInWindow(Entity entity) {
         double maxX = container.getPrefWidth(), maxY = container.getPrefHeight();
 
-        return entity.getTranslateX() < 0
-                || entity.getTranslateY() < 0
-                || entity.getTranslateX() > maxX
-                || entity.getTranslateY() > maxY;
+        return entity.getTranslateX() > 0
+                && entity.getTranslateY() > 0
+                && entity.getTranslateX() < maxX
+                && entity.getTranslateY() < maxY;
     }
 
     @FXML
@@ -92,6 +100,7 @@ public class Controller implements Initializable {
                 left = true;
                 break;
             case SPACE:
+                if(container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) break;
                 container.getChildren().add(player.shoot());
                 break;
         }
