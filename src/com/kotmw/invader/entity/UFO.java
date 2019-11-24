@@ -4,14 +4,15 @@ import javafx.scene.paint.Color;
 
 public class UFO extends Enemy {
 
+    private boolean rightSpawn = false;
+
     public UFO(double x, double y, double w, double h, Color color) {
-        super(x, y, w, h, EntityType.UFO, color);
+        super(Math.random() > 0.5 ? x : 0, y, w, h, EntityType.UFO, color);
+        rightSpawn = getTranslateX() == x;
     }
 
-    @Override
-    public void moveRight() {
-        setTranslateX( getTranslateX() - 2);
+    public void move() {
+        setTranslateX(getTranslateX() + (rightSpawn ? -2 : 2));
     }
-
 
 }
