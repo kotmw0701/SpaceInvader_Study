@@ -1,8 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.Pane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kotmw.invader.Controller">
    <children>
       <Pane fx:id="container" layoutY="65.0" prefHeight="550.0" prefWidth="1200.0" style="-fx-background-color: #080808;" />
+      <VBox fx:id="debugMonitor" layoutY="65.0" prefHeight="200.0" prefWidth="210.0" style="-fx-background-color: #fff1;">
+         <children>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label text="Frame :    " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="frameBox" text="00000000" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label text="PTime :    " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="ptimeBox" text="00000000" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label text="Lives :    " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="livesBox" text="00000000" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label text="Location : " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="locationBox" text="00000000" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="10.0" top="10.0" />
+         </padding>
+      </VBox>
    </children>
 </Pane>

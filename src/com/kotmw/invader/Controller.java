@@ -1,15 +1,15 @@
 package com.kotmw.invader;
 
-import com.kotmw.invader.entity.Cannon;
-import com.kotmw.invader.entity.Enemy;
-import com.kotmw.invader.entity.Entity;
-import com.kotmw.invader.entity.Invader;
+import com.kotmw.invader.entity.*;
 import com.kotmw.invader.entity.missile.CannonMissile;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -20,15 +20,20 @@ import java.util.stream.Collectors;
 public class Controller implements Initializable {
 
     @FXML
-    public Pane root;
-    
+    private Pane root, container;
+
     @FXML
-    public Pane container;
+    private VBox debugMonitor;
+
+    @FXML
+    private Label frameBox, ptimeBox, livesBox, locationBox;
 
     private Cannon player = new Cannon(580, 500, 40, 40, Color.GREEN);
 
     private boolean right, left;
     private double centerX, centerY;
+
+    private long startTime;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,10 +46,11 @@ public class Controller implements Initializable {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update();
+                update(now);
             }
         };
 
+        startTime = System.nanoTime();
         timer.start();
     }
 
@@ -55,7 +61,12 @@ public class Controller implements Initializable {
     }
 
 
-    private void update() {
+    private void update(long now) {
+        double second = (now - startTime) / 1000000000.0;
+        System.out.printf("%.4f : %.4f : %d\r", second, second%25, entities().size());
+        if (second%25 == 0) {
+            container.getChildren().add(new UFO(container.getPrefWidth(), 10, 40, 20, Color.PURPLE));
+        }
 
         if (right && player.getTranslateX()+player.getWidth() < container.getPrefWidth()) player.moveRight();
         if (left && player.getTranslateX() > 0) player.moveLeft();
@@ -67,6 +78,11 @@ public class Controller implements Initializable {
                 case Invader:
                     break;
                 case UFO:
+                    ((UFO)entity).move();
+                    if (!isObjectInWindow(entity)) {
+                        entity.dead();
+                        break;
+                    }
                     break;
                 case CannonMissile:
                     entity.moveUp();
@@ -86,6 +102,10 @@ public class Controller implements Initializable {
                     if (!isObjectInWindow(entity)) {
                         entity.dead();
                         break;
+                    }
+                    if (entity.getBoundsInParent().intersects(player.getBoundsInParent())) {
+                        player.dead();
+                        entity.dead();
                     }
                     break;
             }
@@ -113,12 +133,13 @@ public class Controller implements Initializable {
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 11; x++) {
                 Invader invader;
+                int yPoint = y*40+50*level;
                 if (y == 0) {       //最上段
-                    invader = new Invader((centerX*0.58)+x*50, y*40+50, 30, 20, Color.CYAN);
+                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.CYAN);
                 } else if (y < 3) { //中段2段
-                    invader = new Invader((centerX*0.58)+x*50, y*40+50, 30, 20, Color.GREEN);
+                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.GREEN);
                 } else {            //下段2段
-                    invader = new Invader((centerX*0.58)+x*50, y*40+50, 30, 20, Color.YELLOW);
+                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.YELLOW);
                 }
                 container.getChildren().add(invader);
             }
@@ -126,7 +147,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void onKeyPressed(KeyEvent keyEvent) {
+    private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case RIGHT:
                 right = true;
@@ -135,14 +156,14 @@ public class Controller implements Initializable {
                 left = true;
                 break;
             case SPACE:
-                if(container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) break;
+                if(container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) return;
                 container.getChildren().add(player.shoot());
                 break;
         }
     }
 
     @FXML
-    public void onKeyReleased(KeyEvent keyEvent) {
+    private void onKeyReleased(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case RIGHT:
                 right = false;
