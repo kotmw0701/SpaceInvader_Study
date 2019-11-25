@@ -6,7 +6,6 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -34,12 +33,14 @@ public class Controller implements Initializable {
     private double centerX, centerY;
 
     private long startTime;
+    private int secondSeparator;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         container.getChildren().add(player);
         centerX = container.getPrefWidth()/2;
         centerY = container.getHeight()/2;
+        debugMonitor.setOpacity(0);
 
         createLevel(1);
 
@@ -62,19 +63,19 @@ public class Controller implements Initializable {
 
 
     private void update(long now) {
-        double second = (now - startTime) / 1000000000.0;
-        System.out.printf("%.4f : %.4f : %d\r", second, second%25, entities().size());
-        if (second%25 == 0) {
-            container.getChildren().add(new UFO(container.getPrefWidth(), 10, 40, 20, Color.PURPLE));
+        double second = (now - startTime) / 1_000_000_000.0;
+        setDebugMonitor(second);
+        if (((int) second) != secondSeparator) { //1秒ごとの処理
+            secondSeparator = (int) second;
+            if (secondSeparator%25 == 0)
+                container.getChildren().add(new UFO(container.getPrefWidth(), 10, 40, 20, Color.PURPLE));
         }
 
-        if (right && player.getTranslateX()+player.getWidth() < container.getPrefWidth()) player.moveRight();
+        if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
         if (left && player.getTranslateX() > 0) player.moveLeft();
 
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
-                case Cannon:
-                    break;
                 case Invader:
                     break;
                 case UFO:
@@ -107,6 +108,8 @@ public class Controller implements Initializable {
                         player.dead();
                         entity.dead();
                     }
+                    break;
+                default:
                     break;
             }
         });
@@ -146,6 +149,12 @@ public class Controller implements Initializable {
         }
     }
 
+    private void setDebugMonitor(double secound) {
+        ptimeBox.setText(String.format("%.1f", secound));
+        livesBox.setText(String.valueOf(entities().size()));
+        locationBox.setText(String.format("%.0f/%.0f", player.getTranslateX(), player.getTranslateY()));
+    }
+
     @FXML
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
@@ -159,6 +168,8 @@ public class Controller implements Initializable {
                 if(container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) return;
                 container.getChildren().add(player.shoot());
                 break;
+            case F3:
+                debugMonitor.setOpacity(debugMonitor.getOpacity() == 1 ? 0 : 1);
         }
     }
 
