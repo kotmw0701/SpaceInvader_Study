@@ -10,7 +10,7 @@
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kotmw.invader.Controller">
    <children>
       <Pane fx:id="container" layoutY="65.0" prefHeight="550.0" prefWidth="1200.0" style="-fx-background-color: #080808;" />
-      <VBox fx:id="debugMonitor" layoutY="65.0" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: #fff1;">
+      <VBox fx:id="debugMonitor" layoutY="65.0" prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff1;">
          <children>
             <HBox prefHeight="30.0" prefWidth="200.0">
                <children>
@@ -62,6 +62,20 @@
                      </font>
                   </Label>
                   <Label fx:id="locationBox" text="XXXXXXXX" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="120.0" prefWidth="296.0">
+               <children>
+                  <Label text="Invaders : " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="invadersBox" text="OOOOOOOOOOO&#10;OOOOOOOOOOO&#10;OOOOOOOOOOO&#10;OOOOOOOOOOO&#10;OOOOOOOOOOO" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="MS Gothic" size="20.0" />
                      </font>
