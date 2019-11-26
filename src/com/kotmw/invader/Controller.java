@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.List;
@@ -25,9 +26,10 @@ public class Controller implements Initializable {
     private VBox debugMonitor;
 
     @FXML
-    private Label frameBox, ptimeBox, livesBox, locationBox;
+    private Label frameBox, ptimeBox, livesBox, locationBox, invadersBox;
 
-    private Cannon player = new Cannon(580, 500, 40, 40, Color.GREEN);
+    private Cannon player = new Cannon(580, 500, 35, 20, Color.CYAN);
+    private Invader[][] invaders = new Invader[11][5];
 
     private boolean right, left;
     private double centerX, centerY;
@@ -68,7 +70,7 @@ public class Controller implements Initializable {
         if (((int) second) != secondSeparator) { //1秒ごとの処理
             secondSeparator = (int) second;
             if (secondSeparator%25 == 0)
-                container.getChildren().add(new UFO(container.getPrefWidth(), 10, 40, 20, Color.PURPLE));
+                container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
         }
 
         if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
@@ -77,6 +79,8 @@ public class Controller implements Initializable {
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
                 case Invader:
+//                    Invader invader = (Invader) entity;
+//                    if (invader.isActive()) container.getChildren().add(invader.shoot());
                     break;
                 case UFO:
                     ((UFO)entity).move();
@@ -132,18 +136,35 @@ public class Controller implements Initializable {
                 && entity.getTranslateY() < maxY;
     }
 
+
+    /*
+    メモ : インベーダーの設置方法について
+    ・ インベーダーに座標データを入れる
+    メリット          |   デメリット
+    ソースコードの簡略化  |  生存情報の確認が一工夫必要
+    メモリの節約      |   先頭インベーダーの取得が一工夫必要
+
+    ・ 配列のインデックス番号で座標を管理する
+    メリット          |   デメリット
+     */
     private void createLevel(int level) {
-        for (int y = 0; y < 5; y++) {
-            for (int x = 0; x < 11; x++) {
+        for (int x = 0; x < 11; x++) {
+            Invader abobeInvader = null;
+            for (int y = 0; y < 5; y++) {
                 Invader invader;
                 int yPoint = y*40+50*level;
                 if (y == 0) {       //最上段
-                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.CYAN);
+                    invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.CYAN);
                 } else if (y < 3) { //中段2段
-                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.GREEN);
+                    invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.GREEN, abobeInvader);
                 } else {            //下段2段
-                    invader = new Invader((centerX*0.58)+x*50, yPoint, 30, 20, Color.YELLOW);
+                    invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.YELLOW, abobeInvader);
+                    if (y == 4) invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.RED, abobeInvader, true);
                 }
+                Invader finalInvader = invader;
+                invader.setOnMouseClicked(e -> finalInvader.dead());
+                abobeInvader = invader;
+                invaders[x][y] = invader;
                 container.getChildren().add(invader);
             }
         }
@@ -153,6 +174,17 @@ public class Controller implements Initializable {
         ptimeBox.setText(String.format("%.1f", secound));
         livesBox.setText(String.valueOf(entities().size()));
         locationBox.setText(String.format("%.0f/%.0f", player.getTranslateX(), player.getTranslateY()));
+        invadersBox.setText(getInvaderStatus());
+    }
+
+    public String getInvaderStatus() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 11; x++)
+                stringBuilder.append(invaders[x][y].isDead() ? "X" : invaders[x][y].isActive() ? "A" : "O");
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     @FXML
@@ -165,7 +197,7 @@ public class Controller implements Initializable {
                 left = true;
                 break;
             case SPACE:
-                if(container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) return;
+                if (container.getChildren().stream().anyMatch(e -> e instanceof CannonMissile)) return;
                 container.getChildren().add(player.shoot());
                 break;
             case F3:

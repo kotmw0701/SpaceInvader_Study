@@ -7,8 +7,22 @@ import javafx.scene.paint.Color;
 
 public class Invader extends Enemy implements Shooter {
 
+    private boolean active = false;
+    private Invader abobeInvader;
+
+
     public Invader(double x, double y, double w, double h, Color color) {
+        this(x, y, w, h, color, null, false);
+    }
+
+    public Invader(double x, double y, double w, double h, Color color, Invader abobeInvader) {
+        this(x, y, w, h, color, abobeInvader, false);
+    }
+
+    public Invader(double x, double y, double w, double h, Color color, Invader abobeInvader, boolean active) {
         super(x, y, w, h, EntityType.Invader, color);
+        this.abobeInvader = abobeInvader;
+        this.active = active;
     }
 
     @Override
@@ -28,7 +42,24 @@ public class Invader extends Enemy implements Shooter {
 
     @Override
     public Missile shoot() {
-        return new InvaderMissile(getTranslateX(), getTranslateY() + 20, 5, 20, Color.WHITE);
+        return new InvaderMissile(getTranslateX() + 12, getTranslateY() + 20, 5, 20, Color.WHITE);
+    }
+
+    @Override
+    public boolean dead() {
+        if (abobeInvader != null && active) abobeInvader.changeActive();
+        return super.dead();
+    }
+
+    public boolean isActive() { return active; }
+
+    /*
+    自分が死んでる時に呼ばれて、上が存在すれば上をactiveにする
+     */
+    private void changeActive() {
+        if (isDead()) {
+            if (abobeInvader != null) abobeInvader.changeActive();
+        } else active = true;
     }
 }
 /*
@@ -36,4 +67,10 @@ public class Invader extends Enemy implements Shooter {
     8 : 12  x2
     8 : 11  x2
     8 : 8   x1
+
+    O O O O A : 初期状態
+    O A X X X : 先頭から順番にやられてる状態
+    O A X O A : 途中がやられるとその後ろのがアクティブになってしまう
+    O O X O A : こうなって
+    O A X X X : こうなるようにしたい
  */

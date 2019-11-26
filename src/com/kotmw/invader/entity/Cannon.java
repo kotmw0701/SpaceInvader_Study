@@ -23,6 +23,6 @@ public class Cannon extends Entity implements Shooter {
 
     @Override
     public Missile shoot() {
-        return new CannonMissile(getTranslateX() + 20, getTranslateY() - 10, 5, 20, Color.WHITE);
+        return new CannonMissile(getTranslateX() + 15, getTranslateY() - 10, 5, 20, Color.WHITE);
     }
 }
