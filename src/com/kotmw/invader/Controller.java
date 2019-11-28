@@ -2,6 +2,7 @@ package com.kotmw.invader;
 
 import com.kotmw.invader.entity.*;
 import com.kotmw.invader.entity.missile.CannonMissile;
+import com.kotmw.invader.entity.missile.InvaderMissile;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,9 +10,12 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,7 +39,7 @@ public class Controller implements Initializable {
     private double centerX, centerY;
 
     private long startTime;
-    private int secondSeparator;
+    private int frameCount;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,21 +61,25 @@ public class Controller implements Initializable {
         timer.start();
     }
 
+    /**
+     * 存在するEntityを全部返す
+     * @return Entityのリスト
+     */
     private List<Entity> entities() {
         return container.getChildren().stream()
                 .filter(e -> e instanceof Entity)
                 .map(e -> (Entity)e).collect(Collectors.toList());
     }
 
-
+    /**
+     * フレームごとの処理
+     * @param now 今の時間(ナノ秒)
+     */
     private void update(long now) {
+        frameCount++;
         double second = (now - startTime) / 1_000_000_000.0;
         setDebugMonitor(second);
-        if (((int) second) != secondSeparator) { //1秒ごとの処理
-            secondSeparator = (int) second;
-            if (secondSeparator%25 == 0)
-                container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
-        }
+        if (frameCount%60 == 0) container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
 
         if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
         if (left && player.getTranslateX() > 0) player.moveLeft();
@@ -79,8 +87,10 @@ public class Controller implements Initializable {
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
                 case Invader:
-//                    Invader invader = (Invader) entity;
-//                    if (invader.isActive()) container.getChildren().add(invader.shoot());
+                    if (Math.random() > 0.9) {
+                        Invader invader = (Invader) entity;
+                        if (invader.isActive()) container.getChildren().add(invader.shoot());
+                    }
                     break;
                 case UFO:
                     ((UFO)entity).move();
@@ -95,7 +105,7 @@ public class Controller implements Initializable {
                         entity.dead();
                         break;
                     }
-                    entities().stream().filter(e -> e instanceof Enemy).forEach(others -> {
+                    entities().stream().filter(e -> e instanceof Enemy || e instanceof InvaderMissile).forEach(others -> {
                         if (entity.getBoundsInParent().intersects(others.getBoundsInParent())) {
                             others.dead();
                             entity.dead();
@@ -117,7 +127,6 @@ public class Controller implements Initializable {
                     break;
             }
         });
-
         container.getChildren().removeIf(e -> (e instanceof Entity) && ((Entity) e).isDead());
     }
 
@@ -137,16 +146,6 @@ public class Controller implements Initializable {
     }
 
 
-    /*
-    メモ : インベーダーの設置方法について
-    ・ インベーダーに座標データを入れる
-    メリット          |   デメリット
-    ソースコードの簡略化  |  生存情報の確認が一工夫必要
-    メモリの節約      |   先頭インベーダーの取得が一工夫必要
-
-    ・ 配列のインデックス番号で座標を管理する
-    メリット          |   デメリット
-     */
     private void createLevel(int level) {
         for (int x = 0; x < 11; x++) {
             Invader abobeInvader = null;
@@ -161,8 +160,6 @@ public class Controller implements Initializable {
                     invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.YELLOW, abobeInvader);
                     if (y == 4) invader = new Invader((centerX*0.63)+x*40, yPoint, 30, 20, Color.RED, abobeInvader, true);
                 }
-                Invader finalInvader = invader;
-                invader.setOnMouseClicked(e -> finalInvader.dead());
                 abobeInvader = invader;
                 invaders[x][y] = invader;
                 container.getChildren().add(invader);
@@ -170,14 +167,14 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setDebugMonitor(double secound) {
-        ptimeBox.setText(String.format("%.1f", secound));
+    private void setDebugMonitor(double second) {
+        ptimeBox.setText(String.format("%.1f", second));
         livesBox.setText(String.valueOf(entities().size()));
         locationBox.setText(String.format("%.0f/%.0f", player.getTranslateX(), player.getTranslateY()));
         invadersBox.setText(getInvaderStatus());
     }
 
-    public String getInvaderStatus() {
+    private String getInvaderStatus() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 11; x++)
@@ -202,6 +199,14 @@ public class Controller implements Initializable {
                 break;
             case F3:
                 debugMonitor.setOpacity(debugMonitor.getOpacity() == 1 ? 0 : 1);
+            case F12:
+                File file = new File("C:\\Users\\G018C1131\\Videos\\nc142777.mp4");
+                Media media = new Media(file.toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                MediaView mediaView = new MediaView(mediaPlayer);
+                root.getChildren().add(mediaView);
+                mediaPlayer.setOnEndOfMedia(() -> root.getChildren().removeIf(e -> e instanceof MediaView));
+                mediaPlayer.play();
         }
     }
 

@@ -53,9 +53,6 @@ public class Invader extends Enemy implements Shooter {
 
     public boolean isActive() { return active; }
 
-    /*
-    自分が死んでる時に呼ばれて、上が存在すれば上をactiveにする
-     */
     private void changeActive() {
         if (isDead()) {
             if (abobeInvader != null) abobeInvader.changeActive();
