@@ -79,7 +79,7 @@ public class Controller implements Initializable {
         frameCount++;
         double second = (now - startTime) / 1_000_000_000.0;
         setDebugMonitor(second);
-        if (frameCount%60 == 0) container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
+        if (frameCount%(60*25) == 0) container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
 
         if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
         if (left && player.getTranslateX() > 0) player.moveLeft();
@@ -87,10 +87,10 @@ public class Controller implements Initializable {
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
                 case Invader:
-                    if (Math.random() > 0.9) {
-                        Invader invader = (Invader) entity;
-                        if (invader.isActive()) container.getChildren().add(invader.shoot());
-                    }
+//                    if (Math.random() > 0.99) {
+//                        Invader invader = (Invader) entity;
+//                        if (invader.isActive()) container.getChildren().add(invader.shoot());
+//                    }
                     break;
                 case UFO:
                     ((UFO)entity).move();
@@ -147,6 +147,11 @@ public class Controller implements Initializable {
 
 
     private void createLevel(int level) {
+        Tochica tochica = new Tochica(325, 400, 100, 60);
+        Tochica tochica2 = new Tochica(475, 400, 100, 60);
+        Tochica tochica3 = new Tochica(625, 400, 100, 60);
+        Tochica tochica4 = new Tochica(775, 400, 100, 60);
+        container.getChildren().addAll(tochica, tochica2, tochica3, tochica4);
         for (int x = 0; x < 11; x++) {
             Invader abobeInvader = null;
             for (int y = 0; y < 5; y++) {
@@ -184,6 +189,16 @@ public class Controller implements Initializable {
         return stringBuilder.toString();
     }
 
+    private void bomb() {
+        File file = new File("C:\\Users\\G018C1131\\Videos\\nc142777.mp4");
+        Media media = new Media(file.toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        root.getChildren().add(mediaView);
+        mediaPlayer.setOnEndOfMedia(() -> root.getChildren().removeIf(e -> e instanceof MediaView));
+        mediaPlayer.play();
+    }
+
     @FXML
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
@@ -199,14 +214,7 @@ public class Controller implements Initializable {
                 break;
             case F3:
                 debugMonitor.setOpacity(debugMonitor.getOpacity() == 1 ? 0 : 1);
-            case F12:
-                File file = new File("C:\\Users\\G018C1131\\Videos\\nc142777.mp4");
-                Media media = new Media(file.toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(media);
-                MediaView mediaView = new MediaView(mediaPlayer);
-                root.getChildren().add(mediaView);
-                mediaPlayer.setOnEndOfMedia(() -> root.getChildren().removeIf(e -> e instanceof MediaView));
-                mediaPlayer.play();
+                break;
         }
     }
 
