@@ -27,17 +27,17 @@ public class Invader extends Enemy implements Shooter {
 
     @Override
     public void moveRight() {
-        setTranslateX( getTranslateX() + 2 );//敵の残り数、下に行った回数に寄って可変
+        setTranslateX( getTranslateX() + 5 );//敵の残り数、下に行った回数に寄って可変
     }
 
     @Override
     public void moveLeft() {
-        setTranslateX( getTranslateX() - 2 );//敵の残り数、下に行った回数によって可変
+        setTranslateX( getTranslateX() - 5 );//敵の残り数、下に行った回数によって可変
     }
 
     @Override
     public void moveDown() {
-        setTranslateY( getTranslateY() + 2 );
+        setTranslateY( getTranslateY() + 5 );
     }
 
     @Override

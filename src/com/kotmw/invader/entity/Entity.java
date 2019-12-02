@@ -21,6 +21,7 @@ public abstract class Entity extends Rectangle {
         super(w, h, color);
 
         this.entityType = entityType;
+
         this.setTranslateX(x);
         this.setTranslateY(y);
     }

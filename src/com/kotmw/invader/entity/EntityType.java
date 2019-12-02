@@ -5,5 +5,6 @@ public enum EntityType {
     Invader,
     UFO,
     CannonMissile,
-    InvaderMissile
+    InvaderMissile,
+    Block
 }
