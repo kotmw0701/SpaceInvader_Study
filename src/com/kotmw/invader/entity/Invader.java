@@ -27,22 +27,22 @@ public class Invader extends Enemy implements Shooter {
 
     @Override
     public void moveRight() {
-        setTranslateX( getTranslateX() + 5 );//敵の残り数、下に行った回数に寄って可変
+        setX( getX() + 5 );
     }
 
     @Override
     public void moveLeft() {
-        setTranslateX( getTranslateX() - 5 );//敵の残り数、下に行った回数によって可変
+        setX( getX() - 5 );
     }
 
     @Override
     public void moveDown() {
-        setTranslateY( getTranslateY() + 20 );
+        setY( getY() + 20 );
     }
 
     @Override
     public Missile shoot() {
-        return new InvaderMissile(getTranslateX() + 12, getTranslateY() + 20, 5, 20, Color.WHITE);
+        return new InvaderMissile(getX() + 12, getY() + 20, 5, 20, Color.WHITE);
     }
 
     @Override

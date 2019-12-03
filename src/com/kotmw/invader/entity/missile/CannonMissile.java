@@ -11,6 +11,6 @@ public class CannonMissile extends Missile {
 
     @Override
     public void moveUp() {
-        setTranslateY( getTranslateY() - 15);
+        setY( getY() - 15);
     }
 }

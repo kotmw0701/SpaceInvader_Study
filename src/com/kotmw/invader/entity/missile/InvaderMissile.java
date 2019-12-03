@@ -11,6 +11,6 @@ public class InvaderMissile extends Missile {
 
     @Override
     public void moveDown() {
-        setTranslateY( getTranslateY() + 5);
+        setY( getY() + 5);
     }
 }

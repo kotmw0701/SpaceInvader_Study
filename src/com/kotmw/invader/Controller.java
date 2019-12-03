@@ -39,7 +39,7 @@ public class Controller implements Initializable {
     private boolean right, left, invaderRight, down;
     private double centerX, centerY;
 
-    private long startTime;
+    private long startTime, previous;
     private int frameCount;
 
     private Line leftLine, rightLine;
@@ -69,7 +69,9 @@ public class Controller implements Initializable {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update(now);
+                if (now - previous >= 2000000)
+                    update(now);
+                previous = now;
             }
         };
 
@@ -97,8 +99,8 @@ public class Controller implements Initializable {
         setDebugMonitor(second);
         if (frameCount%(60*25) == 0) container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
 
-        if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
-        if (left && player.getTranslateX() > 0) player.moveLeft();
+        if (right && player.getX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
+        if (left && player.getX() > 0) player.moveLeft();
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
                 case Invader:
@@ -164,7 +166,7 @@ public class Controller implements Initializable {
                 for (int x = 0; x < 11; x++) {
                     Invader invader = invaders[x][y];
                     if (invader.isDead()) continue;
-                    double invaderX = invader.getTranslateX();
+                    double invaderX = invader.getX();
                     rightMost = Math.max(rightMost, invaderX);
                     leftMost = Math.min(leftMost, invaderX);
                 }
@@ -190,10 +192,10 @@ public class Controller implements Initializable {
     private boolean isObjectInWindow(Entity entity) {
         double maxX = container.getPrefWidth(), maxY = container.getPrefHeight();
 
-        return entity.getTranslateX() > 0
-                && entity.getTranslateY() > 0
-                && entity.getTranslateX() < maxX
-                && entity.getTranslateY() < maxY;
+        return entity.getX() > 0
+                && entity.getY() > 0
+                && entity.getX() < maxX
+                && entity.getY() < maxY;
     }
 
 
@@ -226,7 +228,7 @@ public class Controller implements Initializable {
     private void setDebugMonitor(double second) {
         ptimeBox.setText(String.format("%.1f", second));
         livesBox.setText(String.valueOf(entities().size()));
-        locationBox.setText(String.format("%.0f/%.0f", player.getTranslateX(), player.getTranslateY()));
+        locationBox.setText(String.format("%.0f/%.0f", player.getX(), player.getY()));
         invadersBox.setText(getInvaderStatus());
     }
 
