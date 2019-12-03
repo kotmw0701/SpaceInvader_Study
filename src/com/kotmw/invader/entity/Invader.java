@@ -37,7 +37,7 @@ public class Invader extends Enemy implements Shooter {
 
     @Override
     public void moveDown() {
-        setTranslateY( getTranslateY() + 5 );
+        setTranslateY( getTranslateY() + 20 );
     }
 
     @Override

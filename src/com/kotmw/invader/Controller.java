@@ -146,8 +146,6 @@ public class Controller implements Initializable {
                         entity.dead();
                     }
                     break;
-                case Block:
-                    break;
                 default:
                     break;
             }
@@ -158,26 +156,29 @@ public class Controller implements Initializable {
         });
 
         if (frameCount%30 == 0) {
-            int mostRight = 0;
-            int mostLeft = 10;
+            int mostRight = 0, mostLeft = 10;
+            double leftX = 0, rightX = 0;
             for (int y = 0; y < 5; y++) {
                 for (int x = 0; x < 11; x++) {
                     Invader invader = invaders[x][y];
                     if (invader.isDead()) continue;
-                    mostRight = Math.max(mostRight, x);
-                    mostLeft = Math.min(mostLeft, x);
+
+                    if (mostRight < Math.max(mostRight, x)) {
+                        mostRight = Math.max(mostRight, x);
+                        rightX = invader.getTranslateX();
+                    }
+
+                    if (mostLeft > Math.min(mostLeft, x)) {
+                        mostLeft = Math.min(mostLeft, x);
+                        leftX = invader.getTranslateX();
+                    }
                 }
             }
-
-            double leftX = invaders[mostLeft][0].getTranslateX(), rightX = invaders[mostRight][0].getTranslateX();
             leftLine.setTranslateX(leftX);
             rightLine.setTranslateX(rightX);
 
             if (!down) {
-                if (250 > leftX || 950 < rightX) {
-                    down = true;
-                    invaderRight = !invaderRight;
-                }
+                if (down = (250 > leftX || 950 < rightX)) invaderRight = !invaderRight;
             } else down = false;
 
         }
