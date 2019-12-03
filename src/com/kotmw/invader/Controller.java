@@ -154,30 +154,26 @@ public class Controller implements Initializable {
             });
         });
 
+        /*
+        一番外側に居るインベーダーを左右それぞれ取得
+        もし外側に居るインベーダーのどちらかが規定のX座標より外側に居る場合は次の更新時に折り返しを実行するように
+         */
         if (frameCount%30 == 0) {
-            int rightMost = 0, leftMost = 10;
-            double leftX = 0, rightX = 0;
+            double rightMost = 250, leftMost = 950;
             for (int y = 0; y < 5; y++) {
                 for (int x = 0; x < 11; x++) {
                     Invader invader = invaders[x][y];
                     if (invader.isDead()) continue;
-
-                    if (rightMost < Math.max(rightMost, x)) {
-                        rightMost = Math.max(rightMost, x);
-                        rightX = invader.getTranslateX();
-                    }
-
-                    if (leftMost > Math.min(leftMost, x)) {
-                        leftMost = Math.min(leftMost, x);
-                        leftX = invader.getTranslateX();
-                    }
+                    double invaderX = invader.getTranslateX();
+                    rightMost = Math.max(rightMost, invaderX);
+                    leftMost = Math.min(leftMost, invaderX);
                 }
             }
-            leftLine.setTranslateX(leftX);
-            rightLine.setTranslateX(rightX);
+            leftLine.setTranslateX(leftMost);
+            rightLine.setTranslateX(rightMost);
 
             if (!down) {
-                if (down = (250 > leftX || 950 < rightX)) invaderRight = !invaderRight;
+                if (down = (250 > leftMost || 950 < rightMost)) invaderRight = !invaderRight;
             } else down = false;
 
         }
