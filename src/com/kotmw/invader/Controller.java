@@ -14,6 +14,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.net.URL;
@@ -35,11 +36,13 @@ public class Controller implements Initializable {
     private Cannon player = new Cannon(580, 500, 35, 20, Color.CYAN);
     private Invader[][] invaders = new Invader[11][5];
 
-    private boolean right, left, invaderRight;
+    private boolean right, left, invaderRight, down;
     private double centerX, centerY;
 
     private long startTime;
     private int frameCount;
+
+    private Line leftLine, rightLine;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -47,6 +50,18 @@ public class Controller implements Initializable {
         centerX = container.getPrefWidth()/2;
         centerY = container.getHeight()/2;
         debugMonitor.setOpacity(0);
+
+        leftLine = new Line(0, 0, 0, 600);
+        leftLine.setStroke(Color.LIGHTGREEN);
+
+        rightLine = new Line(0, 0, 0, 600);
+        rightLine.setStroke(Color.PINK);
+
+        Line sampleLeft = new Line(250, 0, 250, 600), sampleRight = new Line(950, 0, 950, 600);
+        sampleLeft.setStroke(Color.RED);
+        sampleRight.setStroke(Color.RED);
+
+        container.getChildren().addAll(leftLine, rightLine, sampleLeft, sampleRight);
 
         createLevel(1);
 
@@ -83,20 +98,22 @@ public class Controller implements Initializable {
 
         if (right && player.getTranslateX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
         if (left && player.getTranslateX() > 0) player.moveLeft();
-
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
+                case Cannon:
+                    break;
                 case Invader:
 //                    if (frameCount%120 == 0 && Math.random() < 0.1) {
 //                        Invader invader = (Invader) entity;
 //                        if (invader.isActive()) container.getChildren().add(invader.shoot());
 //                    }
-                    /*
-                    左右 750
-                    中心 600
-                    右   975
-                    左   225
-                     */
+                    if (frameCount%30 == 0) {
+                        if (down) entity.moveDown();
+                        else {
+                            if (invaderRight) entity.moveRight();
+                            else entity.moveLeft();
+                        }
+                    }
                     break;
                 case UFO:
                     ((UFO)entity).move();
@@ -139,6 +156,32 @@ public class Controller implements Initializable {
                         && ((Tochica) tochica).hitTochica(entity)) entity.dead();
             });
         });
+
+        if (frameCount%30 == 0) {
+            int mostRight = 0;
+            int mostLeft = 10;
+            for (int y = 0; y < 5; y++) {
+                for (int x = 0; x < 11; x++) {
+                    Invader invader = invaders[x][y];
+                    if (invader.isDead()) continue;
+                    mostRight = Math.max(mostRight, x);
+                    mostLeft = Math.min(mostLeft, x);
+                }
+            }
+
+            double leftX = invaders[mostLeft][0].getTranslateX(), rightX = invaders[mostRight][0].getTranslateX();
+            leftLine.setTranslateX(leftX);
+            rightLine.setTranslateX(rightX);
+
+            if (!down) {
+                if (250 > leftX || 950 < rightX) {
+                    down = true;
+                    invaderRight = !invaderRight;
+                }
+            } else down = false;
+
+        }
+
         container.getChildren().removeIf(e -> (e instanceof Entity) && ((Entity) e).isDead());
     }
 
