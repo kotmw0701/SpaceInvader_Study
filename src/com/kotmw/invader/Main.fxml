@@ -15,7 +15,21 @@
          </children></Pane>
       <VBox fx:id="debugMonitor" layoutY="65.0" prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff1;">
          <children>
-            <HBox prefHeight="30.0" prefWidth="200.0">
+            <HBox prefHeight="20.0" prefWidth="200.0">
+               <children>
+                  <Label text="Java  :    " textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="javaBox" text="XXXXXXXX" textFill="WHITE">
+                     <font>
+                        <Font name="MS Gothic" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="20.0" prefWidth="200.0">
                <children>
                   <Label text="Frame :    " textFill="WHITE">
                      <font>
@@ -29,7 +43,7 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="200.0">
+            <HBox prefHeight="20.0" prefWidth="200.0">
                <children>
                   <Label text="PTime :    " textFill="WHITE">
                      <font>
@@ -43,7 +57,7 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="200.0">
+            <HBox prefHeight="20.0" prefWidth="200.0">
                <children>
                   <Label text="Lives :    " textFill="WHITE">
                      <font>
@@ -57,9 +71,9 @@
                   </Label>
                </children>
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="200.0">
+            <HBox prefHeight="20.0" prefWidth="200.0">
                <children>
-                  <Label text="Location : " textFill="WHITE">
+                  <Label text="X / Y :    " textFill="WHITE">
                      <font>
                         <Font name="MS Gothic" size="20.0" />
                      </font>

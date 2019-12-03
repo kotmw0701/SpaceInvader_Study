@@ -12,12 +12,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception{
-        Scene scene = new Scene(FXMLLoader.load(getClass().getResource("Main.fxml")));
-        scene.getRoot().requestFocus();
-        stage.setTitle("Invader");
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.sizeToScene();
+        Scene scene = new Scene(FXMLLoader.load(getClass().getResource("Main.fxml")));//スクリーンのデータを読み込む
+        scene.getRoot().requestFocus();//キー入力を受け付けるようにする
+        stage.setTitle("Invader");//タイトルを設定する
+        stage.setResizable(false);//サイズ変更を不可能にする
+        stage.setScene(scene);//読み込んだデータを設定する
+        stage.sizeToScene();//サイズ変更を不可能にしたときに左右に生ずる10pxのバグの余白を削除する
         stage.show();
     }
 

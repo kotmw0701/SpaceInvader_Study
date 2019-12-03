@@ -31,7 +31,7 @@ public class Controller implements Initializable {
     private VBox debugMonitor;
 
     @FXML
-    private Label frameBox, ptimeBox, livesBox, locationBox, invadersBox;
+    private Label javaBox, frameBox, ptimeBox, livesBox, locationBox, invadersBox;
 
     private Cannon player = new Cannon(580, 500, 35, 20, Color.CYAN);
     private Invader[][] invaders = new Invader[11][5];
@@ -46,6 +46,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        javaBox.setText(System.getProperty("java.version"));
         container.getChildren().add(player);
         centerX = container.getPrefWidth()/2;
         centerY = container.getHeight()/2;
@@ -100,8 +101,6 @@ public class Controller implements Initializable {
         if (left && player.getTranslateX() > 0) player.moveLeft();
         entities().forEach(entity -> {
             switch (entity.getEntityType()) {
-                case Cannon:
-                    break;
                 case Invader:
 //                    if (frameCount%120 == 0 && Math.random() < 0.1) {
 //                        Invader invader = (Invader) entity;
@@ -156,20 +155,20 @@ public class Controller implements Initializable {
         });
 
         if (frameCount%30 == 0) {
-            int mostRight = 0, mostLeft = 10;
+            int rightMost = 0, leftMost = 10;
             double leftX = 0, rightX = 0;
             for (int y = 0; y < 5; y++) {
                 for (int x = 0; x < 11; x++) {
                     Invader invader = invaders[x][y];
                     if (invader.isDead()) continue;
 
-                    if (mostRight < Math.max(mostRight, x)) {
-                        mostRight = Math.max(mostRight, x);
+                    if (rightMost < Math.max(rightMost, x)) {
+                        rightMost = Math.max(rightMost, x);
                         rightX = invader.getTranslateX();
                     }
 
-                    if (mostLeft > Math.min(mostLeft, x)) {
-                        mostLeft = Math.min(mostLeft, x);
+                    if (leftMost > Math.min(leftMost, x)) {
+                        leftMost = Math.min(leftMost, x);
                         leftX = invader.getTranslateX();
                     }
                 }
