@@ -46,9 +46,9 @@ public class Invader extends Enemy implements Shooter {
     }
 
     @Override
-    public boolean dead() {
+    public boolean turnDead() {
         if (abobeInvader != null && active) abobeInvader.changeActive();
-        return super.dead();
+        return super.turnDead();
     }
 
     public boolean isActive() { return active; }

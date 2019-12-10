@@ -50,7 +50,7 @@ public abstract class Entity extends Rectangle {
      * 対象のEntityを死亡状態に変更する
      * @return 既に死亡状態だったらfalse、死亡状態になったらtrue
      */
-    public boolean dead() {
+    public boolean turnDead() {
         if(dead) return false;
         return dead = true;
     }

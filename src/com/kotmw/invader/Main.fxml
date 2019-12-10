@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
 <Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kotmw.invader.Controller">
    <children>
-      <Pane fx:id="container" layoutY="65.0" prefHeight="550.0" prefWidth="1200.0" style="-fx-background-color: #080808;">
-         <children>
-            <Pane layoutX="250.0" layoutY="-25.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #222;" />
-         </children></Pane>
+      <Pane fx:id="container" layoutY="65.0" prefHeight="550.0" prefWidth="1200.0" style="-fx-background-color: #080808;" />
       <VBox fx:id="debugMonitor" layoutY="65.0" prefHeight="250.0" prefWidth="250.0" style="-fx-background-color: #fff1;">
          <children>
             <HBox prefHeight="20.0" prefWidth="200.0">

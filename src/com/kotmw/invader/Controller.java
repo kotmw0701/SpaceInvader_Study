@@ -3,7 +3,8 @@ package com.kotmw.invader;
 import com.kotmw.invader.entity.*;
 import com.kotmw.invader.entity.missile.CannonMissile;
 import com.kotmw.invader.entity.missile.InvaderMissile;
-import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -15,6 +16,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -66,17 +68,15 @@ public class Controller implements Initializable {
 
         createLevel(1);
 
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (now - previous >= 2000000)
-                    update(now);
-                previous = now;
-            }
-        };
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        new Duration(16),
+                        event -> update(0)
+                )
+        );
 
-        startTime = System.nanoTime();
-        timer.start();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     /**
@@ -95,8 +95,8 @@ public class Controller implements Initializable {
      */
     private void update(long now) {
         frameCount++;
-        double second = (now - startTime) / 1_000_000_000.0;
-        setDebugMonitor(second);
+//        double second = (now - startTime) / 1_000_000_000.0;
+        setDebugMonitor(frameCount/60);
         if (frameCount%(60*25) == 0) container.getChildren().add(new UFO(container.getPrefWidth(), 10, 50, 20, Color.PURPLE));
 
         if (right && player.getX() + player.getWidth() < container.getPrefWidth()) player.moveRight();
@@ -119,32 +119,32 @@ public class Controller implements Initializable {
                 case UFO:
                     ((UFO)entity).move();
                     if (!isObjectInWindow(entity)) {
-                        entity.dead();
+                        entity.turnDead();
                         break;
                     }
                     break;
                 case CannonMissile:
                     entity.moveUp();
                     if (!isObjectInWindow(entity)) {
-                        entity.dead();
+                        entity.turnDead();
                         break;
                     }
                     entities().stream().filter(e -> e instanceof Enemy || e instanceof InvaderMissile).forEach(others -> {
                         if (entity.getBoundsInParent().intersects(others.getBoundsInParent())) {
-                            others.dead();
-                            entity.dead();
+                            others.turnDead();
+                            entity.turnDead();
                         }
                     });
                     break;
                 case InvaderMissile:
                     entity.moveDown();
                     if (!isObjectInWindow(entity)) {
-                        entity.dead();
+                        entity.turnDead();
                         break;
                     }
                     if (entity.getBoundsInParent().intersects(player.getBoundsInParent())) {
-                        player.dead();
-                        entity.dead();
+                        player.turnDead();
+                        entity.turnDead();
                     }
                     break;
                 default:
@@ -152,7 +152,7 @@ public class Controller implements Initializable {
             }
             container.getChildren().stream().filter(e -> e instanceof Tochica).forEach(tochica -> {
                 if (entity.getBoundsInParent().intersects(tochica.getBoundsInParent())
-                        && ((Tochica) tochica).hitTochica(entity)) entity.dead();
+                        && ((Tochica) tochica).hitTochica(entity)) entity.turnDead();
             });
         });
 
@@ -254,6 +254,7 @@ public class Controller implements Initializable {
 
     @FXML
     private void onKeyPressed(KeyEvent keyEvent) {
+
         switch (keyEvent.getCode()) {
             case RIGHT:
                 right = true;
@@ -268,6 +269,8 @@ public class Controller implements Initializable {
             case F3:
                 debugMonitor.setOpacity(debugMonitor.getOpacity() == 1 ? 0 : 1);
                 break;
+            default:
+                break;
         }
     }
 
@@ -279,6 +282,8 @@ public class Controller implements Initializable {
                 break;
             case LEFT:
                 left = false;
+                break;
+            default:
                 break;
         }
     }
